@@ -26,4 +26,27 @@ router.get("/:userId", async(req,res) => {
     }
 })
 
+router.get("", async(req,res) => {
+    const newConversation = {
+        members: [req.body.senderId, req.body.receiverId], 
+    };
+    try {
+        Conversation.findOne( {members: [req.body.senderId, req.body.receiverId], }, (err,value)=> {
+            if(value !== null){
+                res.status(200).json(value)
+            }
+        });
+        Conversation.findOne( {members: [req.body.receiverId, req.body.senderId], }, (err,value)=> {
+            if(value !== null){
+                res.status(200).json(value)
+            }
+            value = []
+            res.status(200).json(value)
+        });
+    } catch (error) {
+        res.status(500).json(error)
+        
+    }
+})
+
 module.exports = router;

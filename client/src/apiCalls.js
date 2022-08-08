@@ -3,10 +3,7 @@ import axios from "axios";
 export const loginCall = async (userCredential, dispatch) => {
   dispatch({ type: "LOGIN_START" });
   try {
-    await axios.post ("http://localhost:8080/api/auth/login", userCredential).then( res =>{
-
-    //localStorage.setItem('user',JSON.stringify(res))
-   // console.log("res",res.data)
+    await axios.post (`${process.env.REACT_APP_API_URL}/api/auth/login`, userCredential).then( res =>{
     dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
   })
   } catch (err) {

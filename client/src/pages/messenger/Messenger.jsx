@@ -8,6 +8,7 @@ import {useContext} from "react"
 import axios from "axios"
 import { useState } from "react"
 import { useEffect,useRef } from "react"
+import {io} from "socket.io-client"
 
 const Messenger = () =>{
 
@@ -15,14 +16,41 @@ const Messenger = () =>{
     const [currentChat,setCurrentChat] = useState(null)
     const [messages,setMessages] = useState([])
     const [newMessage,setNewMessage] = useState("")
-    const scrollref = useRef()
+    const [arrivalMessage,setArrivalMessage] = useState("")
+    const [onlineUsers,setOlineUsers] = useState([])
+    const socket = useRef()
 
     const {user} = useContext(AuthContext)
+
+    const API_URL= process.env.REACT_APP_API_URL
+
+    useEffect(()=>{
+        socket.current = io("ws://localhost:8900")
+        socket.current.on("getMessage" , data => {
+            setArrivalMessage({
+                sender: data.senderId,
+                text: data.text,
+                createdAt: Date.now()
+            })
+        })
+    },[])
+
+    useEffect( () =>{
+        arrivalMessage && currentChat?.members.includes(arrivalMessage.sender) &&
+        setMessages([...messages,arrivalMessage])
+    },[arrivalMessage,currentChat])
+
+    useEffect(()=>{
+        socket.current.emit("addUser",user._id)
+        socket.current.on("getUsers",users => {
+            setOlineUsers(users)
+        })
+    },[user])
 
     useEffect( ()=>{
         const getConversations = async ()=>{
             try {
-                const res = await axios.get("http://localhost:8080/api/conversation/"+user._id)
+                const res = await axios.get(`${API_URL}/api/conversation/${user._id}`)
                 //console.log("conver ",res.data)
                 setConversations(res.data)
             } catch (error) {
@@ -35,7 +63,7 @@ const Messenger = () =>{
     useEffect( ()=>{
         const getMessages = async() =>{
             try {
-                const res = await axios.get("http://localhost:8080/api/message/"+ currentChat?._id)
+                const res = await axios.get(`${API_URL}/api/message/${currentChat?._id}`)
                 setMessages(res.data)
             } catch (error) {
                 console.log(error)
@@ -51,21 +79,23 @@ const Messenger = () =>{
             text: newMessage,
             conversationId: currentChat._id
         }
+
+        const receiverId = currentChat.members.find(member => member !== user._id)
+
+        socket.current.emit("sendMessage",{
+            senderId: user._id,
+            receiverId: receiverId,
+            text: newMessage
+        })
+
         try {
-            const res = await axios.post("http://localhost:8080/api/message",message)
+            const res = await axios.post(`${API_URL}/api/message`,message)
             setMessages([...messages,res.data])
             setNewMessage("")
         } catch (error) {
             console.log(error)
         }
     }
-
-    // useEffect(()=>{
-    //     scrollref.current?.scrollIntoView({behavior: "smooth"})
-    // }, [messages])
-
-
-    // console.log(messages)
 
     return (
         <>
@@ -105,9 +135,10 @@ const Messenger = () =>{
             </div>
             <div className="chatOnline">
                 <div className="chatOnlineWrapper">
-                    <ChatOnline />
-                    <ChatOnline />
-                    <ChatOnline />
+                    <ChatOnline 
+                        onlineUsers ={onlineUsers} 
+                        currentId ={user._id}
+                    />
                 </div>
             </div>
         </div>

@@ -7,14 +7,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router";
 
-export default function Profile() {
+export default function Profile() { 
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-  const [user, setUser] = useState({});
+  const url= process.env.REACT_APP_API_URL
+  const [user, setUser] = useState({});  
   const username = useParams().username;
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await axios.get(`/users?username=${username}`);
+      const res = await axios.get(`http://localhost:8080/api/users?username=${username}`);
       setUser(res.data);
     };
     fetchUser();
@@ -32,7 +33,7 @@ export default function Profile() {
                 className="profileCoverImg"
                 src={
                   user.coverPicture
-                    ? PF + user.coverPicture
+                    ?  user.coverPicture
                     : PF + "person/noCover.png"
                 }
                 alt=""
@@ -41,7 +42,7 @@ export default function Profile() {
                 className="profileUserImg"
                 src={
                   user.profilePicture
-                    ? PF + user.profilePicture
+                    ?  user.profilePicture
                     : PF + "person/noAvatar.png"
                 }
                 alt=""
@@ -53,7 +54,7 @@ export default function Profile() {
             </div>
           </div>
           <div className="profileRightBottom">
-            <Feed username={username} />
+            <Feed />
             <Rightbar user={user} />
           </div>
         </div>
