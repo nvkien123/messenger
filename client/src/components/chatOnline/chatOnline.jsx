@@ -4,8 +4,9 @@ import { useState,useEffect,useRef } from "react"
 
 const ChatOnline =({onlineUsers ,currentId})=> {
 
-    const online= []
+    const [online,setOnline] = useState([])
     let newOnline = onlineUsers
+    console.log("currenrId ",currentId)
 
     const API_URL= process.env.REACT_APP_API_URL
 
@@ -16,20 +17,25 @@ const ChatOnline =({onlineUsers ,currentId})=> {
         console.log(newOnline)
         newOnline.map( async(user)=> {
             try {
-                const res = await axios.get(`${API_URL}/api/users?userId=${user.userId}`)
-                online.push(res.data)
+                if (currentId !== user.userId) {
+                    const res = await axios.get(`${API_URL}/api/users?userId=${user.userId}`)
+                    setOnline([...online,res.data])
+                }
             } catch (error) {
                 console.log(error)
             }
         })
-        console.log(online)
+        //console.log(online)
     },[onlineUsers])
 
-    console.log(online)
+    console.log("user online ",online)
     return(
         <>
         { online.map((value) => { return(
         <div className="chatOnline">
+            <br></br>
+            <h3>user online</h3>
+            <br></br>
             <div className="chatOnlineFriend">
                 <div className="chatOnlineImgContainer">
                     <img className="chatOnlineImg" 
