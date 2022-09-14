@@ -1,8 +1,9 @@
-const User = require("../models/User");
-const router = require("express").Router();
-const bcrypt = require("bcrypt");
+import express from "express";
+import bcrypt from "bcrypt";
+import User from "../models/User.js";
 
-//update user
+const router = express.Router()
+
 router.put("/:id", async (req, res) => {
   if (req.body.userId === req.params.id || req.body.isAdmin) {
     if (req.body.password) {
@@ -26,7 +27,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-//delete user
 router.delete("/:id", async (req, res) => {
   if (req.body.userId === req.params.id || req.body.isAdmin) {
     try {
@@ -40,7 +40,6 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-//get a user
 router.get("/", async (req, res) => {
   const userId = req.query.userId;
   const username = req.query.username;
@@ -57,4 +56,4 @@ router.get("/", async (req, res) => {
 
 
 
-module.exports = router;
+export default router;

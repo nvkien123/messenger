@@ -1,5 +1,7 @@
-const router = require("express").Router();
-const Conversation = require("../models/Conversation");
+import express from "express";
+import Conversation from "../models/Conversation.js";
+
+const router = express.Router()
 
 router.post("/", async(req,res)=>{
     const newConversation = new Conversation({
@@ -13,7 +15,6 @@ router.post("/", async(req,res)=>{
         
     }
 })
-
 router.get("/:userId", async(req,res) => {
     try {
         const conversation = await Conversation.find({
@@ -25,7 +26,6 @@ router.get("/:userId", async(req,res) => {
         
     }
 })
-
 router.get("", async(req,res) => {
     const newConversation = {
         members: [req.body.senderId, req.body.receiverId], 
@@ -49,4 +49,4 @@ router.get("", async(req,res) => {
     }
 })
 
-module.exports = router;
+export default router;

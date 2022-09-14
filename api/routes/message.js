@@ -1,9 +1,10 @@
-const router = require("express").Router();
-const Message = require("../models/Message");
+import express from "express";
+import Message from "../models/Message.js";
+
+const router = express.Router()
 
 router.post("/", async(req,res)=> {
-    const newMessage = new Message(req.body);
-    
+    const newMessage = new Message(req.body);    
     try {
         const savedMessage = await newMessage.save();
         res.status(200).json(savedMessage);
@@ -23,5 +24,4 @@ router.get("/:conversationId", async(req,res) =>{
     }
 })
 
-
-module.exports = router;
+export default router;

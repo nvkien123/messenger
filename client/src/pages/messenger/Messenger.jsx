@@ -18,14 +18,13 @@ const Messenger = () =>{
     const [newMessage,setNewMessage] = useState("")
     const [arrivalMessage,setArrivalMessage] = useState("")
     const [onlineUsers,setOlineUsers] = useState([])
-    const socket = useRef()
+    const socket = useRef(io("http://localhost:8080"))
 
     const {user} = useContext(AuthContext)
 
     const API_URL= process.env.REACT_APP_API_URL
 
     useEffect(()=>{
-        socket.current = io("ws://localhost:8900")
         socket.current.on("getMessage" , data => {
             setArrivalMessage({
                 sender: data.senderId,
