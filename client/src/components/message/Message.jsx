@@ -2,9 +2,10 @@ import "./message.css"
 import {format} from "timeago.js"
 import { useEffect,useRef } from "react"
 
-const Message = ({message, own,messages})=>{
+const Message = ({message, own,messages,profilePicture})=>{
 
     const scrollref = useRef()
+   // console.log("profilePicture ",profilePicture)
 
     useEffect(()=>{
         scrollref.current?.scrollIntoView({behavior: "smooth"})
@@ -13,7 +14,7 @@ const Message = ({message, own,messages})=>{
         <div className={own ? "message own" : "message"} ref={scrollref}>
             <div className="messageTop">
                 <img className="messageImg"
-                    src="https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1"
+                    src= {profilePicture ? profilePicture : "http://hethongxephangtudong.net/public/client/images/no-avatar.png"}
                     alt=""/>
                 <p className="messageText">{message.text}</p>
             </div>

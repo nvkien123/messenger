@@ -7,11 +7,8 @@ import path from "path"
 import cors from "cors"
 import http from "http"
 import multer from "multer";
+import route from "./routes/index.js";
 import { Server, Socket } from "socket.io";
-import userRoute from "./routes/users.js";
-import authRoute from "./routes/auth.js";
-import coversationRoute from "./routes/conversation.js"
-import messageRoute from "./routes/message.js"
 import logging from "./config/logging.js";
 
 const app = express();
@@ -30,6 +27,9 @@ app.use(cors({ origin: "*",methods: "*", optionsSuccessStatus: 200 }));
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
+
+
+route(app)
 
 // upload file
 //app.use("/images", express.static(path.join(__dirname, "public/images")));
@@ -51,11 +51,6 @@ app.use(morgan("common"));
 //   }
 // });
 
-app.use("/api/auth", authRoute);
-app.use("/api/users", userRoute);
-app.use("/api/conversation",coversationRoute)
-app.use("/api/message",messageRoute)
-
 /// socket.io
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
@@ -69,7 +64,9 @@ const addUser =(userId,socketId) =>{
         return user.userId === userId
     }) ) {
         users.push({userId ,socketId})
+        return true
     }
+    return false
 }
 const removeUser = (socketId) => {
     users = users.filter( (user) => user.socketId !== socketId)
@@ -78,10 +75,11 @@ const getUser = (userId) => {
     return users.find( user => user.userId === userId)
 }
 io.on("connection", (socket) => {
-    console.log("a user connected")
+    console.log("a user connected") 
     socket.on("addUser", (userId)=>{
-        addUser(userId,socket.id)
-        io.emit("getUsers",users)
+        if(addUser(userId,socket.id)) {
+          io.emit("getUsers",users)
+        }
     })
     socket.on("sendMessage", ({senderId,receiverId,text}) => {
         const user = getUser(receiverId)      
@@ -91,7 +89,7 @@ io.on("connection", (socket) => {
         }) 
     })
     socket.on("disconnect", ()=>{
-        console.log("a user disconnect")
+        console.log("a user disconnect ",socket.id)
         removeUser(socket.id)
         io.emit("getUsers",users)
     })

@@ -1,26 +1,39 @@
 import "./topbar.css";
 import { Search, Person, Chat, Notifications } from "@material-ui/icons";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext,useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
-export default function Topbar() {
+import { getUserByUsername,createConversations,getConversations } from "../../api/apiUser";
+
+export default function Topbar({setConversations,userId}) {
   const { user } = useContext(AuthContext);
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+  const [textSearch,setTextSearch] = useState("")
+  const handleSubmit = async(e) =>{
+    e.preventDefault()
+    const newUser = await getUserByUsername(textSearch)
+    await createConversations(userId,newUser._id)
+    setConversations(await getConversations(userId))
+    setTextSearch("")
+  }
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/" style={{ textDecoration: "none" }} onClick={()=>{window.location.reload()}}>
           <span className="logo">Messenger</span>
         </Link>
       </div>
       <div className="topbarCenter">
         <div className="searchbar">
           <Search className="searchIcon" />
+          <form onSubmit={handleSubmit}>
           <input
-            placeholder="connect to new users by email"
+            placeholder="connect to new users by username"
             className="searchInput"
+            onChange={(e)=>{setTextSearch(e.target.value)}}
+            value={textSearch}
           />
+          </form>
         </div>
       </div>
       <div className="topbarRight">
@@ -33,15 +46,15 @@ export default function Topbar() {
             <Chat />
           </div>
           <div className="topbarIconItem">
-            <Notifications />
+            <Notifications /> 
           </div>
         </div>
-        <Link to={`/profile/${user.username}`}>
+        <Link to="/" onClick={()=>{window.location.reload()}}>
           <img
             src={
               user.profilePicture
                 ?  user.profilePicture
-                : PF + "person/noAvatar.png"
+                : "http://hethongxephangtudong.net/public/client/images/no-avatar.png"
             }
             alt=""
             className="topbarImg"

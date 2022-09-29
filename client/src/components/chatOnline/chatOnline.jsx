@@ -5,16 +5,19 @@ import { useState,useEffect,useRef } from "react"
 const ChatOnline =({onlineUsers ,currentId})=> {
 
     const [online,setOnline] = useState([])
-    let newOnline = onlineUsers
-    console.log("currenrId ",currentId)
+    let newOnline = []
+    //console.log("currenrId ",currentId)
 
     const API_URL= process.env.REACT_APP_API_URL
 
     useEffect( ()=>{
-        newOnline.filter( (u) => 
+        newOnline = onlineUsers.filter( (u) => 
             u.userId !== currentId
         )
-        console.log(newOnline)
+        if (newOnline.length === 0) {
+            setOnline([])
+            return
+        }
         newOnline.map( async(user)=> {
             try {
                 if (currentId !== user.userId) {
@@ -28,20 +31,22 @@ const ChatOnline =({onlineUsers ,currentId})=> {
         //console.log(online)
     },[onlineUsers])
 
-    console.log("user online ",online)
+    console.log("all user online ",online)
     return(
         <>
+        <h3>user online</h3>
         { online.map((value) => { return(
         <div className="chatOnline">
-            <br></br>
-            <h3>user online</h3>
-            <br></br>
             <div className="chatOnlineFriend">
                 <div className="chatOnlineImgContainer">
                     <img className="chatOnlineImg" 
-                        src="https://dbk.vn/uploads/ckfinder/images/tranh-anh/Anh-thien-nhien-3.jpg" 
+                        src={
+                            value.profilePicture
+                            ?  value.profilePicture
+                            : "http://hethongxephangtudong.net/public/client/images/no-avatar.png"
+                        }
                         alt=""/>
-                    <div className="chatOnlineBadge"></div>
+                   
                 </div>
                 <span className="chatOnlineName">{value.username}</span>
             </div>

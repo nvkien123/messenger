@@ -3,29 +3,34 @@ import Topbar from "../../components/topbar/Topbar"
 import Conversation from "../../components/conversations/Conversation"
 import Message from "../../components/message/Message"
 import ChatOnline from "../../components/chatOnline/chatOnline"
+import InfoUser from "../../components/infoUser/infoUser"
 import { AuthContext } from "../../context/AuthContext"
+import {getConversations , getMessages, getUserById} from "../../api/apiUser.js"
 import {useContext} from "react"
 import axios from "axios"
 import { useState } from "react"
 import { useEffect,useRef } from "react"
 import {io} from "socket.io-client"
 
+const socket = io(process.env.REACT_APP_API_URL)
+
 const Messenger = () =>{
 
     const [conversations,setConversations] = useState([])
     const [currentChat,setCurrentChat] = useState(null)
+    const [oppositeUser, setOppositeUser] = useState({});
     const [messages,setMessages] = useState([])
     const [newMessage,setNewMessage] = useState("")
     const [arrivalMessage,setArrivalMessage] = useState("")
-    const [onlineUsers,setOlineUsers] = useState([])
-    const socket = useRef(io("http://localhost:8080"))
+    const [onlineUsers,setOnlineUsers] = useState([])
 
     const {user} = useContext(AuthContext)
 
-    const API_URL= process.env.REACT_APP_API_URL
+    const apiUrl= process.env.REACT_APP_API_URL
 
     useEffect(()=>{
-        socket.current.on("getMessage" , data => {
+        //console.log("current chat ",currentChat)
+        socket.on("getMessage" , data => {
             setArrivalMessage({
                 sender: data.senderId,
                 text: data.text,
@@ -40,35 +45,25 @@ const Messenger = () =>{
     },[arrivalMessage,currentChat])
 
     useEffect(()=>{
-        socket.current.emit("addUser",user._id)
-        socket.current.on("getUsers",users => {
-            setOlineUsers(users)
-        })
+        console.log("add user")
+        socket.emit("addUser",user._id)
     },[user])
 
-    useEffect( ()=>{
-        const getConversations = async ()=>{
-            try {
-                const res = await axios.get(`${API_URL}/api/conversation/${user._id}`)
-                //console.log("conver ",res.data)
-                setConversations(res.data)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        getConversations()
+    useEffect(()=>{
+        socket.on("getUsers",users => {
+            //console.log("users ",users)
+            setOnlineUsers(users)
+        })
+    },[])
+
+    useEffect( async()=>{
+
+        setConversations(await getConversations(user._id))
+        console.log("conversations ",conversations)
     }, [user._id])
     
-    useEffect( ()=>{
-        const getMessages = async() =>{
-            try {
-                const res = await axios.get(`${API_URL}/api/message/${currentChat?._id}`)
-                setMessages(res.data)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        getMessages()
+    useEffect( async()=>{
+        setMessages( await getMessages(currentChat?._id))
     }, [currentChat])
 
     const handleSubmit = async(e)=>{
@@ -81,14 +76,14 @@ const Messenger = () =>{
 
         const receiverId = currentChat.members.find(member => member !== user._id)
 
-        socket.current.emit("sendMessage",{
+        socket.emit("sendMessage",{
             senderId: user._id,
             receiverId: receiverId,
             text: newMessage
         })
 
         try {
-            const res = await axios.post(`${API_URL}/api/message`,message)
+            const res = await axios.post(`${apiUrl}/api/message`,message)
             setMessages([...messages,res.data])
             setNewMessage("")
         } catch (error) {
@@ -96,19 +91,29 @@ const Messenger = () =>{
         }
     }
 
+    const handleCurrentChat = (c)=>{
+        const fetchUser = async () => {
+            let oppositeId = (c.members[0] === user._id ? c.members[1] : c.members[0])
+            setOppositeUser(await getUserById(oppositeId));
+        };
+        fetchUser()
+        setCurrentChat(c)
+    }
+
     return (
         <>
-        <Topbar />
+        <Topbar setConversations={setConversations} userId = {user._id}/>
         <div className="messenger">
             <div className="chatMenu">
                 <div className="chatMenuWrapper">
+                <ChatOnline onlineUsers={onlineUsers} currentId = {user._id}/>
+                    <h3>all user</h3>
                     <input placeholder="Search for friends" className="chatMenuInput"/>
                     {conversations.map((c)=>(
-                    <div onClick={()=>{setCurrentChat(c)}}>
-                    <Conversation conversation={c} currentUser ={user}/>
-                    </div>
+                        <div onClick={()=>{handleCurrentChat(c)}}>
+                            <Conversation conversation={c} currentUser ={user}/>
+                        </div>
                     ))}
-                      
                 </div>
             </div>
             <div className="chatBox">
@@ -116,8 +121,8 @@ const Messenger = () =>{
                     { currentChat ? (
                     <>
                     <div className="chatBoxTop" >   
-                        {messages.map( (m) => { return (           
-                            <Message message={m} own ={m.sender === user._id} messages={messages}/>
+                        { oppositeUser.username && messages.map( (m) => { return (           
+                            <Message message={m} own ={m.sender === user._id} messages={messages} profilePicture ={m.sender === user._id ? user.profilePicture : oppositeUser.profilePicture}/>
                         )})}
                     </div>
                     <div className="chatBoxBottom">
@@ -134,9 +139,10 @@ const Messenger = () =>{
             </div>
             <div className="chatOnline">
                 <div className="chatOnlineWrapper">
-                    <ChatOnline 
-                        onlineUsers ={onlineUsers} 
-                        currentId ={user._id}
+                    <InfoUser 
+                       oppositeUser ={oppositeUser}
+                       user = {user}
+                       setConversations = {setConversations}
                     />
                 </div>
             </div>
