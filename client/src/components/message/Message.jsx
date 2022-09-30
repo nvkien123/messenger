@@ -5,8 +5,6 @@ import { useEffect,useRef } from "react"
 const Message = ({message, own,messages,profilePicture})=>{
 
     const scrollref = useRef()
-   // console.log("profilePicture ",profilePicture)
-
     useEffect(()=>{
         scrollref.current?.scrollIntoView({behavior: "smooth"})
     }, [messages])

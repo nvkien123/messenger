@@ -53,11 +53,6 @@ route(app)
 
 /// socket.io
 const httpServer = http.createServer(app);
-const io = new Server(httpServer, {
-  cors: {
-    origin: "*",
-  },
-});
 let users =[]
 const addUser =(userId,socketId) =>{
     if (!users.some( (user) => {       

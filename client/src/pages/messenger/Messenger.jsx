@@ -45,7 +45,7 @@ const Messenger = () =>{
 
     useEffect(()=>{
         console.log("add user")
-        socket.emit("addUser",user._id)
+        socket.emit("addUser",user?._id)
     },[user])
 
     useEffect(()=>{
@@ -60,7 +60,7 @@ const Messenger = () =>{
             setConversations(await getConversations(user._id))
         }
         fetchData()
-    }, [user._id])
+    }, [user?._id])
     
     useEffect( ()=>{
         const fetchData = async() => {
@@ -108,6 +108,9 @@ const Messenger = () =>{
 
     return (
         <>
+        { 
+        user && 
+        <>
         <Topbar setConversations={setConversations} userId = {user._id}/>
         <div className="messenger">
             <div className="chatMenu">
@@ -154,7 +157,8 @@ const Messenger = () =>{
             </div>
         </div>
         </>
-
+                        }
+        </>
     )
 }
 

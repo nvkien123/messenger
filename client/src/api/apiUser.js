@@ -66,6 +66,18 @@ const deleteConversations = async (senderId,receiverId) => {
    }
 };
 
+const updateAvatarUser =  async (userId,linkAvatar) => {
+    try {
+        await axios.put(`${apiURL}/api/users/${userId}`,{
+        userId: userId,
+        profilePicture: linkAvatar
+       });
+   } catch (error) {
+       console.log(error)
+       return 
+   }
+};
+
 
 export  {
     getConversations,
@@ -73,5 +85,6 @@ export  {
     getMessages,
     getUserById,
     getUserByUsername,
-    deleteConversations
+    deleteConversations,
+    updateAvatarUser
 }

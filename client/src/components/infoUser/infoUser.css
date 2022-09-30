@@ -39,3 +39,31 @@
     font-size: 16px;
     cursor: pointer;
 }
+
+.set-avatar {
+    margin-top: 20%;
+}
+
+.set-avatar .choose-avatar,.submit-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.set-avatar input {
+    width: 60%;
+}
+
+.set-avatar button {
+    margin-top: 20px;
+    border-radius : 5%;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
