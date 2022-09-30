@@ -9,17 +9,28 @@ import {
 } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "./context/AuthContext";
+import { getUserById } from "./api/apiUser";
 
 function App() {
+  const fetchData = async()=>{
+    if (user) {
+      console.log("false")
+      return 
+    }
+    let newUser = await getUserById(user._id)
+    console.log("new user ",newUser)
+    localStorage.setItem("user", JSON.stringify(newUser))
+    user = newUser
+  }
   const { user } = useContext(AuthContext);
-  const [currentUser,setCurrentUser] = useState()
+  fetchData()
   return (
     <Router>
       <Switch>
         <Route exact path="/">
           {user ? <Messenger /> : <Register />}
         </Route>
-        <Route path="/login">{user ? <Redirect to="/" /> : <Login setCurrentUser={setCurrentUser}/>}</Route>
+        <Route path="/login">{user ? <Redirect to="/" /> : <Login/>}</Route>
         <Route path="/register">
           {user ? <Redirect to="/" /> : <Register />}
         </Route>

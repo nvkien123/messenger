@@ -24,8 +24,19 @@ const Messenger = () =>{
     const [newMessage,setNewMessage] = useState("")
     const [arrivalMessage,setArrivalMessage] = useState("")
     const [onlineUsers,setOnlineUsers] = useState([])
+    const fetchData = async()=>{
+        if (!user) {
+          console.log("false")
+          return 
+        }
+        let newUser = await getUserById(user._id)
+        console.log("new user ",newUser)
+        localStorage.setItem("user", JSON.stringify(newUser))
+        user = newUser
+    }
 
     const {user} = useContext(AuthContext)
+    fetchData()
 
     useEffect(()=>{
         //console.log("current chat ",currentChat)
