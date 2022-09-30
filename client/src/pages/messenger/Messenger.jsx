@@ -11,6 +11,7 @@ import axios from "axios"
 import { useState } from "react"
 import { useEffect,useRef } from "react"
 import {io} from "socket.io-client"
+import { apiURL } from "../../config/config"
 
 const socket = io(process.env.REACT_APP_API_URL)
 
@@ -25,8 +26,6 @@ const Messenger = () =>{
     const [onlineUsers,setOnlineUsers] = useState([])
 
     const {user} = useContext(AuthContext)
-
-    const apiUrl= process.env.REACT_APP_API_URL
 
     useEffect(()=>{
         //console.log("current chat ",currentChat)
@@ -56,18 +55,25 @@ const Messenger = () =>{
         })
     },[])
 
-    useEffect( async()=>{
-
-        setConversations(await getConversations(user._id))
-        console.log("conversations ",conversations)
+    useEffect( ()=>{
+        const fetchData = async() => {
+            setConversations(await getConversations(user._id))
+        }
+        fetchData()
     }, [user._id])
     
-    useEffect( async()=>{
-        setMessages( await getMessages(currentChat?._id))
+    useEffect( ()=>{
+        const fetchData = async() => {
+            setMessages( await getMessages(currentChat?._id))
+        }
+        fetchData()
     }, [currentChat])
 
     const handleSubmit = async(e)=>{
         e.preventDefault()
+        if (newMessage === "") {
+            return
+        }
         const message = {
             sender: user._id,
             text: newMessage,
@@ -83,7 +89,7 @@ const Messenger = () =>{
         })
 
         try {
-            const res = await axios.post(`${apiUrl}/api/message`,message)
+            const res = await axios.post(`${apiURL}/api/message`,message)
             setMessages([...messages,res.data])
             setNewMessage("")
         } catch (error) {

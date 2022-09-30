@@ -15,10 +15,10 @@ const app = express();
 const NAME_SPACE = "Server";
 dotenv.config();
 mongoose.connect(
-  process.env.MONGO_URL,
+  process.env.MONGGO_URL,
   { useNewUrlParser: true, useUnifiedTopology: true },
   () => {
-    console.log("Connected to MongoDB");
+    console.log("Connected to MongoDB"); 
   }
 );
 
@@ -95,7 +95,7 @@ io.on("connection", (socket) => {
     })
 })
 
-httpServer.listen(8080, () => {
+httpServer.listen(process.env.PORT || 8080, () => {
   logging.info(
     NAME_SPACE,
     "Server is running http://localhost:8080"

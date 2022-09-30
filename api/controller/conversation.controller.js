@@ -32,12 +32,14 @@ const createConversation = async(req,res)=>{
 
 const getConversationById = async(req,res) => {
     try {
+        console.log("getConversationById")
         const conversation = await Conversation.find({
             members: { $in: [req.params.userId]},
             isDelete : false
         });
         res.status(200).json(conversation);
     } catch (error) {
+        console.log("error ",error)
         res.status(400).json(error)
         
     }

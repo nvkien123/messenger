@@ -1,14 +1,13 @@
 import "./chatOnline.css"
 import axios from "axios"
-import { useState,useEffect,useRef } from "react"
+import { useState,useEffect } from "react"
+import { apiURL } from "../../config/config"
 
 const ChatOnline =({onlineUsers ,currentId})=> {
 
     const [online,setOnline] = useState([])
     let newOnline = []
     //console.log("currenrId ",currentId)
-
-    const API_URL= process.env.REACT_APP_API_URL
 
     useEffect( ()=>{
         newOnline = onlineUsers.filter( (u) => 
@@ -21,7 +20,7 @@ const ChatOnline =({onlineUsers ,currentId})=> {
         newOnline.map( async(user)=> {
             try {
                 if (currentId !== user.userId) {
-                    const res = await axios.get(`${API_URL}/api/users?userId=${user.userId}`)
+                    const res = await axios.get(`${apiURL}/api/users?userId=${user.userId}`)
                     setOnline([...online,res.data])
                 }
             } catch (error) {

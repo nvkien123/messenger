@@ -1,10 +1,10 @@
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 import User from "../models/User.js";
 
-const registerUser = async()=>{
+const registerUser = async(req, res)=>{
     try {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        const salt = await bcryptjs.genSalt(10);
+        const hashedPassword = await bcryptjs.hash(req.body.password, salt);
         const newUser = new User({
           username: req.body.username,
           email: req.body.email,
@@ -23,7 +23,7 @@ const login = async (req, res) => {
         res.status(404).json("user not found");
         return
       }
-      const validPassword = await bcrypt.compare(req.body.password, user.password)
+      const validPassword = await bcryptjs.compare(req.body.password, user.password)
       if (!validPassword) {
         res.status(400).json("wrong password")
         return

@@ -18,6 +18,7 @@
 
 .messageText {
     padding: 10px;
+    margin: 10px;
     border-radius: 20px;
     background-color: #1877f2;
     color: white;
@@ -26,7 +27,8 @@
 
 .messageBottom {
     font-size: 12px;
-    margin-top: 10px;
+    margin-top: 5px;
+    margin-left: 30px;
 }
 
 .message.own {

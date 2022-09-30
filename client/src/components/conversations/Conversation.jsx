@@ -3,18 +3,17 @@ import React from "react"
 import { useEffect } from "react"
 import { useState } from "react"
 import "./conversation.css"
+import { apiURL } from "../../config/config"
 
 const Conversation = ({conversation ,currentUser}) =>{
 
     const [user,setUser] = useState({})
-    const API_URL= process.env.REACT_APP_API_URL
-
     useEffect(()=>{
         const friendId = conversation.members.find((m)=>m !== currentUser._id)
 
         const getUser = async () =>{
             try {
-                const res = await axios(`${API_URL}/api/users?userId=${friendId}`)
+                const res = await axios(`${apiURL}/api/users?userId=${friendId}`)
                 setUser(res.data)
                 // console.log("res ",res.data)
             } catch (error) {

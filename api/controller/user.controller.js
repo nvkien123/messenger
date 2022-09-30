@@ -1,12 +1,12 @@
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 import User from "../models/User.js";
 
 const updateUser = async (req, res) => {
   if (req.body.userId === req.params.id || req.body.isAdmin) {
     if (req.body.password) {
       try {
-        const salt = await bcrypt.genSalt(10);
-        req.body.password = await bcrypt.hash(req.body.password, salt);
+        const salt = await bcryptjs.genSalt(10);
+        req.body.password = await bcryptjs.hash(req.body.password, salt);
       } catch (err) {
         return res.status(400).json(err);
       }
