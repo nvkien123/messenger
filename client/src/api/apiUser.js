@@ -1,6 +1,15 @@
 import axios from "axios"
 import { apiURL } from "../config/config"
 
+const loginCall = async (userCredential) => {
+    try {
+      const res = await axios.post (`${apiURL}/api/auth/login`, userCredential)
+      console.log("res ",res)
+      return res.data
+    } catch (err) {
+    }
+  };
+
 const getConversations = async (userId)=>{
     try {
         const res = await axios.get(`${apiURL}/api/conversation/${userId}`)
@@ -14,7 +23,7 @@ const getConversations = async (userId)=>{
 
 const createConversations = async (senderId,receiverId)=>{
     try {
-        const res = await axios.post(`${apiURL}/api/conversation/`,{
+        await axios.post(`${apiURL}/api/conversation/`,{
             senderId: senderId,
             receiverId: receiverId
           })
@@ -80,6 +89,7 @@ const updateAvatarUser =  async (userId,linkAvatar) => {
 
 
 export  {
+    loginCall,
     getConversations,
     createConversations,
     getMessages,

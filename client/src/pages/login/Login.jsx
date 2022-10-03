@@ -1,21 +1,24 @@
 import { useContext, useRef } from "react";
 import "./login.css";
-import { loginCall } from "../../apiCalls";
 import { AuthContext } from "../../context/AuthContext";
 import { CircularProgress } from "@material-ui/core";
+import { loginCall } from "../../api/apiUser";
 
 export default function Login() {
   const email = useRef();
   const password = useRef();
-  const { isFetching, dispatch } = useContext(AuthContext);
+  const { isFetching } = useContext(AuthContext);
 
-  const handleClick = (e) => {
+  const handleClick = async(e) => {
     e.preventDefault();
-    loginCall(
-      { email: email.current.value, password: password.current.value },
-      dispatch
+    let newUser =  await loginCall(
+      { email: email.current.value, password: password.current.value }
     );
-
+    console.log("new user ",newUser)
+    if(newUser){
+      localStorage.setItem("user", JSON.stringify(newUser))
+      window.location = "/"
+    }
   };
 
   return (

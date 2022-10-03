@@ -57,8 +57,9 @@
 }
 
 .chatBoxBottom .chatMessageInput {
-    width: 80%;
-    height: 90px;
+    margin-left: 5px;
+    width: 85%;
+    height: 80px;
     padding: 10px;
 
 }
@@ -70,6 +71,7 @@
     cursor: pointer;
     background-color: teal;
     color: white;
+    margin-left: 10px;
 }
 
 .noCoverSactionText {

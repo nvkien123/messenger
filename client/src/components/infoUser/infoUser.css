@@ -16,7 +16,7 @@
     font-family: "Lucida Console";
     margin-top: 15px;
     text-align: center;
-    font-size: 35px;
+    font-size: 25px;
 }
 
 .opposite .btn-user {
@@ -32,7 +32,7 @@
     background-color: #4CAF50;
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 13px 25px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -60,7 +60,7 @@
     background-color: #4CAF50;
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 13px 25px;
     text-align: center;
     text-decoration: none;
     display: inline-block;

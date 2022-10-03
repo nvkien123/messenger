@@ -4,18 +4,16 @@ import Conversation from "../../components/conversations/Conversation"
 import Message from "../../components/message/Message"
 import ChatOnline from "../../components/chatOnline/chatOnline"
 import InfoUser from "../../components/infoUser/infoUser"
-import { AuthContext } from "../../context/AuthContext"
 import {getConversations , getMessages, getUserById} from "../../api/apiUser.js"
-import {useContext} from "react"
 import axios from "axios"
 import { useState } from "react"
-import { useEffect,useRef } from "react"
+import { useEffect } from "react"
 import {io} from "socket.io-client"
 import { apiURL } from "../../config/config"
 
-const socket = io(process.env.REACT_APP_API_URL)
+const socket = io(apiURL)
 
-const Messenger = () =>{
+const Messenger = ({user}) =>{
 
     const [conversations,setConversations] = useState([])
     const [currentChat,setCurrentChat] = useState(null)
@@ -30,12 +28,10 @@ const Messenger = () =>{
           return 
         }
         let newUser = await getUserById(user._id)
-        console.log("new user ",newUser)
+       // console.log("new user ",newUser)
         localStorage.setItem("user", JSON.stringify(newUser))
         user = newUser
     }
-
-    const {user} = useContext(AuthContext)
     fetchData()
 
     useEffect(()=>{
@@ -51,17 +47,17 @@ const Messenger = () =>{
 
     useEffect( () =>{
         arrivalMessage && currentChat?.members.includes(arrivalMessage.sender) &&
-        setMessages([...messages,arrivalMessage])
+        setMessages((messages)=> [...messages,arrivalMessage])
     },[arrivalMessage,currentChat])
 
     useEffect(()=>{
         console.log("add user")
         socket.emit("addUser",user?._id)
-    },[user])
+    },[])
 
     useEffect(()=>{
         socket.on("getUsers",users => {
-            //console.log("users ",users)
+            console.log("users ",users)
             setOnlineUsers(users)
         })
     },[])

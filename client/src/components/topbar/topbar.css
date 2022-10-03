@@ -34,6 +34,10 @@
   align-items: center;
 }
 
+.searchbar form {
+  width: 100%;
+}
+
 .searchIcon {
   font-size: 20px !important;
   margin-left: 10px;
@@ -41,7 +45,7 @@
 
 .searchInput {
   border: none;
-  width: 450%;
+  width: 95%;
 }
 
 .searchInput:focus {

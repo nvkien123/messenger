@@ -27,12 +27,12 @@ export default function Topbar({setConversations,userId}) {
         <div className="searchbar">
           <Search className="searchIcon" />
           <form onSubmit={handleSubmit}>
-          <input
-            placeholder="connect to new users by username"
-            className="searchInput"
-            onChange={(e)=>{setTextSearch(e.target.value)}}
-            value={textSearch}
-          />
+            <input
+              placeholder="connect to new users by username"
+              className="searchInput"
+              onChange={(e)=>{setTextSearch(e.target.value)}}
+              value={textSearch}
+            />
           </form>
         </div>
       </div>
