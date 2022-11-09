@@ -2,6 +2,7 @@ import "./topbar.css";
 import { Search, Person, Chat, Notifications } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { useContext,useState } from "react";
+import { useHistory } from "react-router";
 import { AuthContext } from "../../context/AuthContext";
 
 import { getUserByUsername,createConversations,getConversations } from "../../api/apiUser";
@@ -9,6 +10,7 @@ import { getUserByUsername,createConversations,getConversations } from "../../ap
 export default function Topbar({setConversations,userId}) {
   const { user } = useContext(AuthContext);
   const [textSearch,setTextSearch] = useState("")
+  const history = useHistory();
   const handleSubmit = async(e) =>{
     e.preventDefault()
     const newUser = await getUserByUsername(textSearch)
@@ -19,7 +21,7 @@ export default function Topbar({setConversations,userId}) {
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
-        <Link to="/" style={{ textDecoration: "none" }} onClick={()=>{window.location.reload()}}>
+        <Link style={{ textDecoration: "none" }} onClick={()=>{history.push("/");}}>
           <span className="logo">Messenger</span>
         </Link>
       </div>
@@ -49,7 +51,7 @@ export default function Topbar({setConversations,userId}) {
             <Notifications /> 
           </div>
         </div>
-        <Link to="/" onClick={()=>{window.location.reload()}}>
+        <Link onClick={()=>{history.push("/");}}>
           <img
             src={
               user.profilePicture

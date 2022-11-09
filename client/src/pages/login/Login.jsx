@@ -1,13 +1,15 @@
 import { useContext, useRef } from "react";
-import "./login.css";
 import { AuthContext } from "../../context/AuthContext";
+import { useHistory } from "react-router";
 import { CircularProgress } from "@material-ui/core";
 import { loginCall } from "../../api/apiUser";
+import "./login.css";
 
 export default function Login() {
   const email = useRef();
   const password = useRef();
   const { isFetching } = useContext(AuthContext);
+  const history = useHistory();
 
   const handleClick = async(e) => {
     e.preventDefault();
@@ -17,7 +19,7 @@ export default function Login() {
     console.log("new user ",newUser)
     if(newUser){
       localStorage.setItem("user", JSON.stringify(newUser))
-      window.location = "/"
+      history.push("/");
     }
   };
 

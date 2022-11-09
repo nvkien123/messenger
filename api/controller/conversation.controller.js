@@ -10,11 +10,9 @@ const createConversation = async(req,res)=>{
         res.status(200).json({status: true})
         return
     }
-
     findConversation = await Conversation.findOneAndUpdate({ members: [req.body.receiverId,req.body.senderId]},{isDelete:false})
-    
     if(findConversation) {
-        res.status(400).json({status:true})
+        res.status(400).json({status:false})
         return
     }
     const newConversation = new Conversation({
@@ -63,8 +61,7 @@ const getConversation = async(req,res) => {
             res.status(200).json(value)
         });
     } catch (error) {
-        res.status(400).json(error)
-        
+        res.status(400).json(error)   
     }
 }
 
@@ -74,8 +71,7 @@ const deleteConversation = async(req,res) => {
         await Conversation.findOneAndUpdate({members: [req.body.senderId , req.body.receiverId],isDelete : false },{isDelete : true})
         res.status(200).json({status: true});
     } catch (error) {
-        res.status(400).json(error)
-        
+        res.status(400).json(error)      
     }
 }
 

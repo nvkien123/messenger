@@ -1,11 +1,12 @@
 import express from "express";
 import userController from "../controller/user.controller.js";
+import JWTAction from "../midleware/JWTAction.js";
 
 const router = express.Router()
 
-router.put("/:id", userController.updateUser);
+router.put("/:id",JWTAction.verifyToken, userController.updateUser);
 
-router.delete("/:id", userController.deleteUser);
+router.delete("/:id",JWTAction.verifyToken, userController.deleteUser);
 
 router.get("/", userController.getUser);
 

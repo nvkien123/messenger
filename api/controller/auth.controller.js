@@ -1,5 +1,8 @@
 import bcryptjs from "bcryptjs";
 import User from "../models/User.js";
+import jwt from "jsonwebtoken"
+import dotenv from"dotenv";
+dotenv.config();
 
 const registerUser = async(req, res)=>{
     try {
@@ -28,8 +31,13 @@ const login = async (req, res) => {
         res.status(400).json("wrong password")
         return
       }
-      //console.log(user)
-      res.status(200).json(user)
+      let payload = {
+          username: user._doc.username,
+          email : user._doc.email
+      }
+      let key = process.env.JWT_SECRET
+      let token = jwt.sign(payload,key)
+      res.status(200).json({...payload,token})
     } catch (err) {
       res.status(400).json(err)
     }
