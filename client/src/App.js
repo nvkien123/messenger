@@ -13,12 +13,15 @@ import {
 function App() {
   const [user,setUser] = useState();
   useEffect(()=>{
+    console.log("oke")
     const fetchData = async()=>{
-      const token = localStorage.getItem("userToken")
+      const token = window.localStorage.getItem("userToken")
       console.log({token})
-      const user = await verifyUserByToken(token)
-      if(user){
-        setUser(user)
+      if(token){
+        const user = await verifyUserByToken(token)
+        if(user){
+          setUser(user)
+        }
       }
     }
     fetchData()

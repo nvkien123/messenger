@@ -38,8 +38,8 @@ const login = async (req, res) => {
       console.log(user)
       let key = process.env.JWT_SECRET
       let token = jwt.sign(payload,key)
-      user.token = token
-      res.status(200).json(user)
+      // user.token = token
+      res.status(200).json({...user,token})
     } catch (err) {
       res.status(400).json(err)
     }

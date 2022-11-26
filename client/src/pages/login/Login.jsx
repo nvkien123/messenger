@@ -18,7 +18,7 @@ export default function Login() {
     );
     console.log("new user ",newUser)
     if(newUser){
-      localStorage.setItem("userToken", JSON.stringify(newUser.token))
+      localStorage.setItem("userToken",newUser.token)
       history.push("/");
     }
   };
