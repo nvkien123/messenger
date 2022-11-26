@@ -32,17 +32,45 @@ const login = async (req, res) => {
         return
       }
       let payload = {
-          username: user._doc.username,
-          email : user._doc.email
+          username: user.username,
+          email : user.email
       }
+      console.log(user)
       let key = process.env.JWT_SECRET
       let token = jwt.sign(payload,key)
-      res.status(200).json({...payload,token})
+      user.token = token
+      res.status(200).json(user)
     } catch (err) {
       res.status(400).json(err)
     }
 };
+
+const verifyUser = async (req, res) => {  
+  try {
+    const token = req.body.token
+    if(!token) {
+        res.status(400).json({message:"can't authenticate"})
+        return 
+    }
+    let key = process.env.JWT_SECRET
+    jwt.verify(token,key,async(err,decoded)=>{
+        if(err) {
+            console.log("error 123",err)
+            res.status(400).json({message:"can't authenticate"})
+            return 
+        }
+        console.log(decoded)
+        const user = await User.findOne({email:decoded.email})
+        user.password = ""
+        res.status(200).json(user)
+    })
+  } catch (err) {
+    res.status(400).json({message:`${err}`})
+  }
+};
+
 export default {
     registerUser,
-    login
+    login,
+    verifyUser
 }

@@ -1,5 +1,5 @@
 import { useContext, useRef } from "react";
-import { AuthContext } from "../../context/AuthContext";
+// import { AuthContext } from "../../context/AuthContext";
 import { useHistory } from "react-router";
 import { CircularProgress } from "@material-ui/core";
 import { loginCall } from "../../api/apiUser";
@@ -8,7 +8,7 @@ import "./login.css";
 export default function Login() {
   const email = useRef();
   const password = useRef();
-  const { isFetching } = useContext(AuthContext);
+  // const { isFetching } = useContext(AuthContext);
   const history = useHistory();
 
   const handleClick = async(e) => {
@@ -18,7 +18,7 @@ export default function Login() {
     );
     console.log("new user ",newUser)
     if(newUser){
-      localStorage.setItem("user", JSON.stringify(newUser))
+      localStorage.setItem("userToken", JSON.stringify(newUser.token))
       history.push("/");
     }
   };
@@ -49,20 +49,12 @@ export default function Login() {
               className="loginInput"
               ref={password}
             />
-            <button className="loginButton" type="submit" disabled={isFetching}>
-              {isFetching ? (
-                <CircularProgress color="white" size="20px" />
-              ) : (
+            <button className="loginButton" type="submit" >
                 "Log In"
-              )}
             </button>
             <span className="loginForgot">Forgot Password?</span>
             <button className="loginRegisterButton">
-              {isFetching ? (
-                <CircularProgress color="white" size="20px" />
-              ) : (
                 <a href="/register" style={{color:"white",textDecoration:"none"}}>Create a New Account</a>
-              )}
             </button>
           </form>
         </div>

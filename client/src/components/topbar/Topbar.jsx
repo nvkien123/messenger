@@ -3,12 +3,12 @@ import { Search, Person, Chat, Notifications } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { useContext,useState } from "react";
 import { useHistory } from "react-router";
-import { AuthContext } from "../../context/AuthContext";
+// import { AuthContext } from "../../context/AuthContext";
 
 import { getUserByUsername,createConversations,getConversations } from "../../api/apiUser";
 
-export default function Topbar({setConversations,userId}) {
-  const { user } = useContext(AuthContext);
+export default function Topbar({setConversations,userId,user}) {
+  // const { user } = useContext(AuthContext);
   const [textSearch,setTextSearch] = useState("")
   const history = useHistory();
   const handleSubmit = async(e) =>{

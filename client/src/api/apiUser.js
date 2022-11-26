@@ -87,6 +87,20 @@ const updateAvatarUser =  async (userId,linkAvatar) => {
    }
 };
 
+const verifyUserByToken = async (token) => {
+    try {
+       const res = await axios.post(`${apiURL}/api/auth/verify-token`,{
+        token:token
+       });
+       console.log(res)
+       if (res.status === "200"){
+        return res.data
+       }
+   } catch (error) {
+       console.log("err "+error)
+       return 
+   }
+};
 
 export  {
     loginCall,
@@ -96,5 +110,6 @@ export  {
     getUserById,
     getUserByUsername,
     deleteConversations,
-    updateAvatarUser
+    updateAvatarUser,
+    verifyUserByToken
 }

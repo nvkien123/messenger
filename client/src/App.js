@@ -1,17 +1,28 @@
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Messenger from "./pages/messenger/Messenger";
+import {verifyUserByToken} from "./api/apiUser"
+import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "./context/AuthContext";
 
 function App() {
-  const { user } = useContext(AuthContext);
+  const [user,setUser] = useState();
+  useEffect(()=>{
+    const fetchData = async()=>{
+      const token = localStorage.getItem("userToken")
+      console.log({token})
+      const user = await verifyUserByToken(token)
+      if(user){
+        setUser(user)
+      }
+    }
+    fetchData()
+  },[user])
   return (
     <Router>
       <Switch>

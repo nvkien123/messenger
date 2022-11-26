@@ -118,7 +118,7 @@ const Messenger = ({user}) =>{
         { 
         user && 
         <>
-        <Topbar setConversations={setConversations} userId = {user._id}/>
+        <Topbar setConversations={setConversations} userId = {user._id} user={user}/>
         <div className="messenger">
             <div className="chatMenu">
                 <div className="chatMenuWrapper">
